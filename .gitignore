@@ -4,10 +4,4 @@ __pycache__/
 *.pyc
 *.ipynb
 Videos/
-columns.pkl
-logistic_model.pkl
-random_forest_model.pkl
-scaler.pkl
-employee_data_10000.csv
-feature_importance.png
 main.py
