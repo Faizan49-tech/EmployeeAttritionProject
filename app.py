@@ -92,7 +92,7 @@ header[data-testid="stHeader"],
 }}
 .main .block-container {{
     max-width: 1320px !important;
-    padding: 1.5rem 2.5rem 4rem !important;
+    padding: 1.5rem 2.5rem 0 !important;
     padding-top: 82px !important;
 }}
 
@@ -728,7 +728,7 @@ if page == "Home":
     st.markdown("""
     <div class="section-head" style="margin-top:2rem;">
         <div class="section-head-bar"></div>
-        <div class="section-head-title">Application Pages</div>
+        <div class="section-head-title">Application Pages </div>
         <div class="section-head-line"></div>
     </div>
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem;">
@@ -2351,71 +2351,141 @@ elif page == "Project Details":
 
 
 # ===================================================
-# FOOTER — app-themed, renders on EVERY page
+# FOOTER — full-width, no gaps, navbar navy colour
 # ===================================================
 
+# Step 1: CSS + JS — kill Streamlit's generated bottom padding completely
+st.markdown("""
+<style>
+.main .block-container,
+.main,
+.stApp,
+section.main > div,
+.element-container:last-child,
+.stMarkdown:last-child {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+section[data-testid="stMain"] > div {
+    padding-bottom: 0 !important;
+}
+.footer-fw {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: 3rem;
+    margin-bottom: 0 !important;
+    background: #060E1F;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+</style>
+<script>
+(function() {
+    function killBottomPadding() {
+        // Target every element that could add bottom space
+        var selectors = [
+            'section.main',
+            'section.main > div',
+            '.main .block-container',
+            '.stApp',
+            '[data-testid="stMain"]',
+            '[data-testid="stMain"] > div',
+            '[data-testid="stAppViewContainer"]',
+            '[data-testid="stAppViewContainer"] > section',
+            '[data-testid="stBottom"]'
+        ];
+        selectors.forEach(function(sel) {
+            var els = document.querySelectorAll(sel);
+            els.forEach(function(el) {
+                el.style.paddingBottom = '0px';
+                el.style.marginBottom = '0px';
+            });
+        });
+        // Also zero padding on any element whose class starts with st-emotion-cache
+        var all = document.querySelectorAll('section.main *');
+        all.forEach(function(el) {
+            var style = window.getComputedStyle(el);
+            if (parseInt(style.paddingBottom) > 0 && el.children.length === 0) {
+                el.style.paddingBottom = '0px';
+            }
+        });
+    }
+    // Run immediately and after page loads
+    killBottomPadding();
+    window.addEventListener('load', killBottomPadding);
+    // Also run after a short delay to catch Streamlit's late DOM injection
+    setTimeout(killBottomPadding, 500);
+    setTimeout(killBottomPadding, 1500);
+})();
+</script>
+""", unsafe_allow_html=True)
+
+# Step 2: Footer HTML using the .footer-fw class
 st.markdown(
-    "<div style='margin-top:4rem; background:white; border:1px solid #E2E8F0;"
-    "border-radius:20px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.06);'>"
+    "<div class='footer-fw'>"
 
-    "<div style='height:3px; background:linear-gradient(90deg,#2563EB,#3B82F6,#22D3EE,#3B82F6,#2563EB);'></div>"
+    "<div style='position:absolute;top:0;left:0;right:0;height:2px;"
+    "background:linear-gradient(90deg,transparent,#F59E0B,#3B82F6,#22D3EE,transparent);opacity:0.8;'></div>"
 
-    "<div style='padding:2.5rem 2.5rem 0;'>"
+    "<div style='position:absolute;inset:0;"
+    "background-image:url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");"
+    "pointer-events:none;'></div>"
 
-    "<div style='display:grid; grid-template-columns:2fr 1.2fr 1.2fr; gap:3rem; margin-bottom:2rem;'>"
+    "<div style='position:relative;z-index:1;display:grid;grid-template-columns:2fr 1.2fr 1.2fr;"
+    "gap:3rem;padding:2.8rem 4rem 2rem;max-width:1320px;margin:0 auto;'>"
 
     "<div>"
-    "<div style='font-family:Playfair Display,Georgia,serif; font-size:1.5rem; font-weight:900; line-height:1.2; margin-bottom:0.75rem;'>"
-    "<span style='color:#2563EB;'>Attrition</span><span style='color:#0F172A;'>IQ</span>"
+    "<div style='font-family:Playfair Display,Georgia,serif;font-size:1.5rem;font-weight:900;"
+    "line-height:1.2;margin-bottom:0.85rem;'>"
+    "<span style='color:#2563EB;'>Attrition</span><span style='color:#ffffff;'>IQ</span>"
     "</div>"
-    "<div style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#64748B; line-height:1.8; max-width:280px;'>"
+    "<div style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;"
+    "line-height:1.8;max-width:280px;'>"
     "A machine learning platform for employee attrition prediction. "
     "Built as a BCA Final Year Major Project — Data Analytics using Python."
     "</div>"
     "</div>"
 
     "<div>"
-    "<div style='font-family:Plus Jakarta Sans,sans-serif; font-weight:700; font-size:0.72rem;"
-    "text-transform:uppercase; letter-spacing:1.2px; color:#94A3B8; margin-bottom:1rem;'>Get In Touch</div>"
-    "<div style='display:flex; align-items:flex-start; gap:10px; margin-bottom:0.8rem;'>"
-    "<div style='width:28px; height:28px; background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(34,211,238,0.1));"
-    "border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px;'>&#9993;</div>"
-    "<span style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.82rem; color:#475569; line-height:1.6; padding-top:4px;'>patwafaizan49@gmail.com</span>"
+    "<div style='font-family:Plus Jakarta Sans,sans-serif;font-weight:700;font-size:0.78rem;"
+    "text-transform:uppercase;letter-spacing:1.5px;color:#ffffff;margin-bottom:1.2rem;'>Get In Touch</div>"
+    "<div style='display:flex;align-items:center;gap:12px;margin-bottom:0.9rem;'>"
+    "<span style='color:#2563EB;font-size:1rem;'>&#9993;</span>"
+    "<span style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;'>"
+    "patwafaizan49@gmail.com</span>"
     "</div>"
-    "<div style='display:flex; align-items:center; gap:10px;'>"
-    "<div style='width:28px; height:28px; background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(34,211,238,0.1));"
-    "border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:13px;'>&#128222;</div>"
-    "<span style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.82rem; color:#475569;'>+91 99249 92102</span>"
+    "<div style='display:flex;align-items:center;gap:12px;'>"
+    "<span style='color:#2563EB;font-size:1rem;'>&#128222;</span>"
+    "<span style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;'>"
+    "+91 99249 92102</span>"
     "</div>"
     "</div>"
 
     "<div>"
-    "<div style='font-family:Plus Jakarta Sans,sans-serif; font-weight:700; font-size:0.72rem;"
-    "text-transform:uppercase; letter-spacing:1.2px; color:#94A3B8; margin-bottom:1rem;'>Quick Links</div>"
-    "<div style='display:flex; flex-direction:column; gap:0.5rem;'>"
-    "<a href='?page=Home'             target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; Home</a>"
-    "<a href='?page=Model+Comparison' target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; Model Comparison</a>"
-    "<a href='?page=Prediction'       target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; Prediction</a>"
-    "<a href='?page=EDA'              target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; EDA</a>"
-    "<a href='?page=Tools'            target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; Tools</a>"
-    "<a href='?page=Project+Details'  target='_self' style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.83rem; color:#475569; text-decoration:none; font-weight:500;'>&#8594;&nbsp; Project</a>"
+    "<div style='font-family:Plus Jakarta Sans,sans-serif;font-weight:700;font-size:0.78rem;"
+    "text-transform:uppercase;letter-spacing:1.5px;color:#ffffff;margin-bottom:1.2rem;'>Quick Links</div>"
+    "<div style='display:flex;flex-direction:column;gap:0.6rem;'>"
+    "<a href='?page=Home'             target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>Home</a>"
+    "<a href='?page=Model+Comparison' target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>Model Comparison</a>"
+    "<a href='?page=Prediction'       target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>Prediction</a>"
+    "<a href='?page=EDA'              target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>EDA</a>"
+    "<a href='?page=Tools'            target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>Tools</a>"
+    "<a href='?page=Project+Details'  target='_self' style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.83rem;color:#64748B;text-decoration:none;'>Project</a>"
     "</div>"
     "</div>"
 
     "</div>"
 
-    "<div style='border-top:1px solid #F1F5F9; padding:1.1rem 0; margin:0;"
-    "display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;'>"
-    "<div style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.76rem; color:#94A3B8;'>"
-    "&#169; 2026 <strong style='color:#64748B; font-weight:600;'>Patwa Faizan Akhtar Hussain</strong>"
-    " &nbsp;&middot;&nbsp; BCA Final Year &middot; VNSGU, Surat"
-    "</div>"
-    "<div style='font-family:Plus Jakarta Sans,sans-serif; font-size:0.76rem; color:#94A3B8;'>"
-    "Built with <span style='color:#F43F5E;'>&#9829;</span> using Python &middot; Streamlit &middot; Scikit-learn"
-    "</div>"
+    "<div style='position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.07);"
+    "padding:1.1rem 4rem;text-align:center;max-width:1320px;margin:0 auto;'>"
+    "<span style='font-family:Plus Jakarta Sans,sans-serif;font-size:0.76rem;color:#334155;'>"
+    "&#169; 2026 Patwa Faizan Akhtar Hussain (A BCA Final Year Student of VNSGU, Surat). All rights reserved."
+    "</span>"
     "</div>"
 
-    "</div>"
     "</div>",
     unsafe_allow_html=True
 )
