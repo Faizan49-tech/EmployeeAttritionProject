@@ -1397,7 +1397,7 @@ elif page == "EDA":
             <div class="eda-stat-label">Attrition Rate</div>
         </div>
         <div class="eda-stat">
-            <div class="eda-stat-num" style="color:#2563EB;">${df['MonthlyIncome'].mean():,.0f}</div>
+            <div class="eda-stat-num" style="color:#2563EB;">₹{df['MonthlyIncome'].mean():,.0f}</div>
             <div class="eda-stat-label">Avg Monthly Income</div>
         </div>
         <div class="eda-stat">
