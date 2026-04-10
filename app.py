@@ -370,8 +370,21 @@ p, li, span, label {{ font-family: var(--fb) !important; }}
 }}
 
 /* ── INPUTS ── */
-label, label p, label div, label span {{
-    color: var(--slate900) !important;
+label, label p, label div, label span,
+[data-testid="stWidgetLabel"],
+[data-testid="stWidgetLabel"] p,
+[data-testid="stWidgetLabel"] span,
+[data-testid="stWidgetLabel"] div,
+[data-testid="stSlider"] label,
+[data-testid="stSlider"] p,
+[data-testid="stSelectbox"] label,
+[data-testid="stSelectbox"] p,
+[data-testid="stNumberInput"] label,
+[data-testid="stNumberInput"] p,
+.stSlider label, .stSlider p,
+.stSelectbox label, .stSelectbox p,
+.stNumberInput label, .stNumberInput p {{
+    color: #0F172A !important;
 }}
 .stSelectbox > div > div {{
     background: white !important; border: 1.5px solid var(--slate200) !important;
