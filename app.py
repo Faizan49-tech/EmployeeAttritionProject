@@ -370,15 +370,14 @@ p, li, span, label {{ font-family: var(--fb) !important; }}
 }}
 
 /* ── INPUTS ── */
+label, label p, label div, label span {{
+    color: var(--slate900) !important;
+}}
 .stSelectbox > div > div {{
     background: white !important; border: 1.5px solid var(--slate200) !important;
     border-radius: var(--r-sm) !important; font-family: var(--fb) !important; font-size: 0.9rem !important;
 }}
-.stNumberInput input {{
-    background: white !important; border: 1.5px solid var(--slate200) !important;
-    border-radius: var(--r-sm) !important; font-family: var(--fb) !important;
-}}
-
+            
 /* ── SLIDERS ── */
 div[data-baseweb="slider"] {{ background: transparent !important; }}
 div[data-baseweb="slider"] > div {{
